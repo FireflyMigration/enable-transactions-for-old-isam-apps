@@ -415,9 +415,16 @@ namespace ENV.Data.DataProvider
         public static bool DefaultUseCursorLocking = false;
 
         bool _useCursorLocking = DefaultUseCursorLocking;
+
+        public static ContextStatic<bool> ForceNonCursorLocks = new ContextStatic<bool>(() => false);
         public bool UseCursorLocking
         {
-            get { return _useCursorLocking; }
+            get
+            {
+                if (ForceNonCursorLocks.Value)
+                    return false;
+                return _useCursorLocking;
+            }
             set
             {
                 _useCursorLocking = value;
@@ -632,7 +639,7 @@ namespace ENV.Data.DataProvider
         {
             var x = entity.EntityName;
             var pos = x.LastIndexOf('\\');
-            return entity.EntityName.Substring(pos+1);
+            return entity.EntityName.Substring(pos + 1);
         }
 
         IDbCommand SQLDataProviderHelperClient.CreateCommand(IDbConnection connection)
@@ -1032,7 +1039,7 @@ namespace ENV.Data.DataProvider
             }
             protected override DbType GetDateTimeDbType(DateTime value)
             {
-                if (value.Year < 1800 || _forceDatetime2||value.Ticks%10000!=0)
+                if (value.Year < 1800 || _forceDatetime2 || value.Ticks % 10000 != 0)
                     return DbType.DateTime2;
                 return DbType.DateTime;
             }
@@ -4356,7 +4363,7 @@ namespace ENV.Data.DataProvider
     }
 
 
-    internal class DataReaderValueLoader : IValueLoader,CanForceDateTime
+    internal class DataReaderValueLoader : IValueLoader, CanForceDateTime
     {
         protected IDataReader _reader;
         protected int _position;
@@ -4455,7 +4462,7 @@ namespace ENV.Data.DataProvider
             if (!string.IsNullOrEmpty(s))
             {
 
-                return s[0] == '1' || s[0] == (char)1 || s.ToLowerInvariant()=="true";
+                return s[0] == '1' || s[0] == (char)1 || s.ToLowerInvariant() == "true";
             }
             return Bool.Cast(value);
         }

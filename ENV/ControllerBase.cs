@@ -629,10 +629,43 @@ namespace ENV
             _checkExitAtTheEndOfOnLoad = true;
         }
         bool _checkExitAtTheEndOfOnLoad = false;
+        public bool EnableTransactions { get; set; }
+        public bool EnableNonCursorLocks { get; set; }
         internal void _AfterOnLoad()
         {
             if (_checkExitAtTheEndOfOnLoad)
                 CheckExit();
+            if (EnableTransactions && !ConnectionManager.ForceTransactions.Value)
+            {
+                Disposables.Add(new ForceTransactionDisposable());
+            }
+            if (EnableNonCursorLocks && !SQLClientEntityDataProvider.ForceNonCursorLocks.Value)
+            {
+                Disposables.Add(new ForceNonCursorLocks());
+            };
+        }
+
+        class ForceTransactionDisposable : IDisposable
+        {
+            public ForceTransactionDisposable()
+            {
+                ConnectionManager.ForceTransactions.Value = true;
+            }
+            public void Dispose()
+            {
+                ConnectionManager.ForceTransactions.Value = false;
+            }
+        }
+        class ForceNonCursorLocks : IDisposable
+        {
+            public ForceNonCursorLocks()
+            {
+                SQLClientEntityDataProvider.ForceNonCursorLocks.Value = true;
+            }
+            public void Dispose()
+            {
+                SQLClientEntityDataProvider.ForceNonCursorLocks.Value = false;
+            }
         }
         class myActiveControllerHandlerChange : IDisposable
         {

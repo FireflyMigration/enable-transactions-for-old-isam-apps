@@ -29,7 +29,11 @@ namespace Northwind
             ENV.Commands.SetVersion9CompatibleKeyMapping();
             ENV.Common.ApplicationTitle = "Northwind";
             ENV.UserSettings.FixedBackColorInNonFlatStyles = true;
+            //ENV.Data.DataProvider.SQLClientEntityDataProvider.DefaultUseCursorLocking = true;
             ENV.UserSettings.InitUserSettings("Northwind.ini", args);
+            ENV.Data.DataProvider.ConnectionManager.Shared.AddDatabase("Northwind", "NoTransSQL",
+                "Northwind", "(local)\\sqlexpress", "", "", System.Data.IsolationLevel.ReadUncommitted, "", "", false, false, false);
+
         }
     }
 }

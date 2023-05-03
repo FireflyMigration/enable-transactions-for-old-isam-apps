@@ -2,11 +2,13 @@
 using ENV.Data;
 using ENV;
 using Firefly.Box.Flow;
+using System;
+
 namespace Northwind.Customers
 {
     /// <summary>ShowCustomers(P#2)</summary>
     /// <remark>Last change before Migration: 01/06/2009 15:46:02</remark>
-    internal class ShowCustomers : FlowUIControllerBase 
+    internal class ShowCustomers : FlowUIControllerBase
     {
         #region Models
         internal readonly Models.Customers Customers = new Models.Customers { AllowRowLocking = true };
@@ -26,7 +28,7 @@ namespace Northwind.Customers
             #region Column Selection and User Flow
             // parameter for selection task
             Columns.Add(pi_CustomerID);
-            
+
             Columns.Add(Customers.CustomerID);
             Columns.Add(Customers.CompanyName);
             Columns.Add(Customers.Address);
@@ -35,16 +37,23 @@ namespace Northwind.Customers
             MarkParameterColumns(pi_CustomerID);
             #endregion
         }
+
+
         /// <summary>ShowCustomers(P#2)</summary>
         public void Run(TextParameter ppi_CustomerID = null)
         {
+
             BindParameter(pi_CustomerID, ppi_CustomerID);
             Execute();
+
         }
         protected override void OnLoad()
         {
-            RowLocking = LockingStrategy.OnRowSaving;
-            TransactionScope = TransactionScopes.SaveToDatabase;
+            EnableTransactions = true;
+            EnableNonCursorLocks = true;
+            OnDatabaseErrorRetry = true;
+            RowLocking = LockingStrategy.OnRowLoading;
+            TransactionScope = TransactionScopes.Task;
             BindAllowInsert(() => Customers.City != "Madrid");
             AllowExportData = true;
             AllowSelect = true;

@@ -27,7 +27,7 @@ namespace Northwind
             if (!ENV.Security.UserManager.ShowLoginDialog(false))
                 return;
             #if DEBUG
-            Common.EnableDeveloperTools = Roles.DeveloperTools.Allowed;
+            Common.EnableDeveloperTools = true;
             #endif
             ;
             Common.BindStatusBar(_mdi.mainStatusLabel, _mdi.userStatusLabel, _mdi.activityStatusLabel, _mdi.expandStatusLabel, _mdi.expandTextBoxStatusLabel, _mdi.insertOverrideStatusLabel, _mdi.versionStatusLabel);

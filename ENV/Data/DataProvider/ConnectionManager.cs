@@ -455,6 +455,7 @@ OnOpenConnection(name, connect.ToString(), cs => new System.Data.SqlClient.SqlCo
                     });
             }
         }
+        public static ContextStatic<bool> ForceTransactions = new ContextStatic<bool>(() => false);
 
         class NoTransactionEntityDataProvider : ISQLEntityDataProvider, ICanGetDecoratedISSQLEntityDataProvider
         {
@@ -507,6 +508,8 @@ OnOpenConnection(name, connect.ToString(), cs => new System.Data.SqlClient.SqlCo
 
             public ITransaction BeginTransaction()
             {
+                if (ForceTransactions.Value)
+                    return _source.BeginTransaction();
                 return new DummyTransaction();
 
             }
@@ -563,7 +566,12 @@ OnOpenConnection(name, connect.ToString(), cs => new System.Data.SqlClient.SqlCo
 
             public bool SupportsTransactions
             {
-                get { return false; }
+                get
+                {
+                    if (ForceTransactions.Value)
+                        return _source.SupportsTransactions;
+                    return false;
+                }
             }
 
             public void Truncate(Firefly.Box.Data.Entity entity)
