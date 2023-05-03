@@ -1,6 +1,6 @@
 # Transactions, locking post migration from ISAM/DB2 to Sql Server
 
-In [this video](youtube) I explain transactions & locking for Btrieve, ISAM, DB2 and Sql Server - and explain what we've done in the Sql Server migration to solve them - and how you can locally enable Transactions and standard locking if you need to.
+In [this video](https://youtu.be/66BxAd1LSC8) I explain transactions & locking for Btrieve, ISAM, DB2 and Sql Server - and explain what we've done in the Sql Server migration to solve them - and how you can locally enable Transactions and standard locking if you need to.
 
 [Here's a link to the commit with the changes](https://github.com/FireflyMigration/enable-transactions-for-old-isam-apps/commit/e3b3ad022ca6df0a78daec15a84b403cd5d36921)
 
