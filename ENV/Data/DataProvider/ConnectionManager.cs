@@ -651,6 +651,11 @@ OnOpenConnection(name, connect.ToString(), cs => new System.Data.SqlClient.SqlCo
 
             public ITransaction BeginTransaction()
             {
+                if (ForceTransactions.Value)
+                {
+                    return _source.BeginTransaction();
+                }
+
                 if (EnableBtrieveTransactions)
                     return _source.BeginTransaction();
                 return new DummyTransaction();
@@ -709,7 +714,14 @@ OnOpenConnection(name, connect.ToString(), cs => new System.Data.SqlClient.SqlCo
 
             public bool SupportsTransactions
             {
-                get { return EnableBtrieveTransactions; }
+                get
+                {
+                    if (ForceTransactions.Value)
+                    {
+                        return _source.SupportsTransactions;
+                    }
+                    return EnableBtrieveTransactions;
+                }
             }
 
             public void Truncate(Firefly.Box.Data.Entity entity)
